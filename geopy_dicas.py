@@ -5,61 +5,38 @@ Created on Fri Jan  4 23:40:43 2019
 @author: pliniobas
 """
 
-
-#
-##%%
-#
-#import math
-#
-#R = 6378.1 #Radius of the Earth
-#brng = math.radians(90) #Bearing is 90 degrees converted to radians.
-#d = 15 #Distance in km
-#
-#lat1 = math.radians(-24.) #Current lat point converted to radians
-#lon1 = math.radians(-42.) #Current long point converted to radians
-#
-#lat2 = math.asin( math.sin(lat1)*math.cos(d/R) +
-#     math.cos(lat1)*math.sin(d/R)*math.cos(brng))
-#
-#lon2 = lon1 + math.atan2(math.sin(brng)*math.sin(d/R)*math.cos(lat1),
-#             math.cos(d/R)-math.sin(lat1)*math.sin(lat2))
-#
-#lat2 = math.degrees(lat2)
-#lon2 = math.degrees(lon2)
-#
-#print(lat2)
-#print(lon2)
-
 #%%
 from geopy.distance import distance,Point
 dir(distance)
 
-#Distancia entre 2 pontos
+#%%Distancia entre 2 pontos
 dis = distance((-24,-42),(-24.5,-42.5)).nm
 print(dis, 'nm')
 dis = distance((-24,-42),(-24.5,-42.5)).km #
 print(dis,'km')
 
-#fornece um novo ponto/offset, fornecendo uma distancia e um rumo em graus
+
+#%%fornece um novo ponto/offset, fornecendo uma distancia e um rumo em graus
 dis = distance(nautical=15).destination((-24,-42),90)
 print(dis,'nm')
 dis = distance(kilometers=1).destination((-24,-42),0)
 print(dis,'km')
 help(distance) # para ver o nome das unidades de distancias
 
-#Formata entre D, DM, DMS.
+#%%Formata de DD.DD para DMS.SS
+
 ponto = distance(nautical=1).destination((-24,-42),0)
-ponto.format() #Passa de grau decimal (D) para grau minuto segundo (DMS)
-ponto.format(deg_char='°') #Passa de grau decimal (D) para DM ou DMS
-help(ponto.format)
+print(dir(ponto))
+print(help(ponto.format))
+print("DMS = ",ponto.format()) #Passa de grau decimal (D) para grau minuto segundo (DMS)
+print("DMS com grau = ", ponto.format(deg_char='°')) #Passa de grau decimal (D) ou DMS
+print("DD.DD = ", ponto.format_decimal())
 
-
-# %%
-#Ponto a partir de uma string
+#%%Ponto a partir de uma string
 p1 = Point('24 45.55m S, 45 0m 0s W')
 
 p2 = Point.from_string('24 45m 30s S, 45 W')
-print(p1)
+print('p1 = ',p1)
 print('p1 == p2?', p1 == p2)
 
 print(p1.format(deg_char = "°", min_char= '\'' ,sec_char= "\""))
@@ -87,6 +64,9 @@ def dd2dm(dd):
     return deg * sinal,mnt
 
 print(dd2dm(p1.latitude))
+#%% Dica do Piero para correção de direção de bussola
+print(-45%360)
+print(370%360)
 
 # %%
 print(p1.latitude)
